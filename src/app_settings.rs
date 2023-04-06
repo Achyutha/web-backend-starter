@@ -4,9 +4,19 @@ use config::{Config, ConfigError, File};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct Settings {
-    pub hostname: [u8; 4],
+pub struct DatabaseSettings {
+    pub username: String,
+    pub password: String,
+    pub host: String,
     pub port: u16,
+    pub database_name: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Settings {
+    pub host: [u8; 4],
+    pub port: u16,
+    pub database: DatabaseSettings,
 }
 
 impl Settings {
@@ -18,5 +28,14 @@ impl Settings {
             .add_source(File::with_name(&format!("configs/{}", run_mode)).required(false))
             .build()?;
         s.try_deserialize()
+    }
+}
+
+impl DatabaseSettings {
+    pub fn connection_string(&self) -> String {
+        format!(
+            "mysql://{}:{}@{}:{}/{}",
+            self.username, self.password, self.host, self.port, self.database_name
+        )
     }
 }
