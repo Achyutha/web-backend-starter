@@ -4,8 +4,8 @@ use axum::{routing::get, Router};
 use sqlx::MySqlPool;
 use std::net::SocketAddr;
 
-mod globals;
 mod app_settings;
+mod globals;
 mod services;
 
 use crate::globals::AppState;
@@ -35,6 +35,7 @@ async fn main() -> Result<()> {
         .route("/health_check", get(services::health_check::health_check))
         .fallback(services::not_found::not_found)
         .with_state(global_state);
+
     let addr = SocketAddr::from((config.host, config.port));
 
     println!("Listening on port: {}!", config.port);
