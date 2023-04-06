@@ -3,7 +3,7 @@ use std::env;
 use config::{Config, ConfigError, File};
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct DatabaseSettings {
     pub username: String,
     pub password: String,
@@ -12,7 +12,7 @@ pub struct DatabaseSettings {
     pub database_name: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Settings {
     pub host: [u8; 4],
     pub port: u16,
