@@ -14,7 +14,7 @@ async fn health_check() -> StatusCode {
 async fn main() -> Result<()> {
     let config = Settings::get_configuration()
         .with_context(|| format!("Unable to read the configuration file!"))?;
-
+    
     let connection_pool = MySqlPool::connect(&config.database.connection_string())
         .await
         .with_context(|| {
@@ -23,6 +23,8 @@ async fn main() -> Result<()> {
                 &config.database.database_name
             )
         })?;
+
+    println!("Successfully Connected to the database!");
 
     let app = Router::new().route("/health_check", get(health_check));
     let addr = SocketAddr::from((config.host, config.port));
