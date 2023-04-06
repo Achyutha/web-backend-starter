@@ -10,4 +10,5 @@ anyhow = "1.0.70"
 axum = "0.5.17"
 config = "0.13.3"
 serde = { version = "1.0.147", features = ["derive"] }
+sqlx = { version = "0.6.3", features = ["mysql", "runtime-tokio-native-tls"] }
 tokio = { version = "1.21.2", features = ["full"] }
