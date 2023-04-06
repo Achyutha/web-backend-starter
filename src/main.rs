@@ -1,20 +1,14 @@
-mod app_settings;
-
 use anyhow::{Context, Result};
 use app_settings::Settings;
-use axum::{http::StatusCode, routing::get, Router};
+use axum::{routing::get, Router};
 use sqlx::MySqlPool;
 use std::net::SocketAddr;
 
-async fn health_check() -> StatusCode {
-    StatusCode::OK
-}
+mod globals;
+mod app_settings;
+mod services;
 
-#[derive(Debug, Clone)]
-struct AppState {
-    db: MySqlPool,
-    config: Settings,
-}
+use crate::globals::AppState;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -38,7 +32,8 @@ async fn main() -> Result<()> {
     };
 
     let app = Router::new()
-        .route("/health_check", get(health_check))
+        .route("/health_check", get(services::health_check::health_check))
+        .fallback(services::not_found::not_found)
         .with_state(global_state);
     let addr = SocketAddr::from((config.host, config.port));
 
