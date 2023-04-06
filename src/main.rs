@@ -10,11 +10,17 @@ async fn health_check() -> StatusCode {
     StatusCode::OK
 }
 
+#[derive(Debug, Clone)]
+struct AppState {
+    db: MySqlPool,
+    config: Settings,
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let config = Settings::get_configuration()
         .with_context(|| format!("Unable to read the configuration file!"))?;
-    
+
     let connection_pool = MySqlPool::connect(&config.database.connection_string())
         .await
         .with_context(|| {
@@ -26,7 +32,14 @@ async fn main() -> Result<()> {
 
     println!("Successfully Connected to the database!");
 
-    let app = Router::new().route("/health_check", get(health_check));
+    let global_state = AppState {
+        db: connection_pool,
+        config: config.clone(),
+    };
+
+    let app = Router::new()
+        .route("/health_check", get(health_check))
+        .with_state(global_state);
     let addr = SocketAddr::from((config.host, config.port));
 
     println!("Listening on port: {}!", config.port);
