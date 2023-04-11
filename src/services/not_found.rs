@@ -3,8 +3,8 @@ use axum::{
     http::{StatusCode, Uri},
 };
 
-use crate::globals::AppState;
+use crate::{commons::Responder, globals::AppState};
 
-pub async fn not_found(State(_app_state): State<AppState>, uri: Uri) -> (StatusCode, String) {
-    (StatusCode::NOT_FOUND, format!("path {uri} not found!"))
+pub async fn not_found(State(_app_state): State<AppState>, uri: Uri) -> Responder<String> {
+    Responder::create_response(format!("path {uri} not found!"), StatusCode::NOT_FOUND)
 }
