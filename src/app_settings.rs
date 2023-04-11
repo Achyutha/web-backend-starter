@@ -17,6 +17,12 @@ pub struct Settings {
     pub host: [u8; 4],
     pub port: u16,
     pub database: DatabaseSettings,
+    pub log: Log,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Log {
+    pub level: String,
 }
 
 impl Settings {

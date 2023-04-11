@@ -12,5 +12,8 @@
     "host": "localhost",
     "port": 3306,
     "database_name": ""
+  },
+  "log": {
+    "level": "debug"
   }
 }
