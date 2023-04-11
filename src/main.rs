@@ -48,7 +48,7 @@ async fn shutdown_signal() {
 #[tokio::main]
 async fn main() -> Result<()> {
     let config = Settings::get_configuration()
-        .with_context(|| format!("Unable to read the configuration file!"))?;
+        .with_context(|| "Unable to read the configuration file!".to_string())?;
 
     init_tracing(&config);
 
