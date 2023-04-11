@@ -39,44 +39,44 @@ where
     T: Serialize,
 {
     pub fn create_response(body: T, status_code: StatusCode) -> Responder<T> {
-        let success = match status_code {
-            StatusCode::BAD_REQUEST => false,
-            StatusCode::UNAUTHORIZED => false,
-            StatusCode::PAYMENT_REQUIRED => false,
-            StatusCode::FORBIDDEN => false,
-            StatusCode::NOT_FOUND => false,
-            StatusCode::METHOD_NOT_ALLOWED => false,
-            StatusCode::NOT_ACCEPTABLE => false,
-            StatusCode::PROXY_AUTHENTICATION_REQUIRED => false,
-            StatusCode::REQUEST_TIMEOUT => false,
-            StatusCode::CONFLICT => false,
-            StatusCode::GONE => false,
-            StatusCode::LENGTH_REQUIRED => false,
-            StatusCode::PRECONDITION_FAILED => false,
-            StatusCode::PAYLOAD_TOO_LARGE => false,
-            StatusCode::URI_TOO_LONG => false,
-            StatusCode::UNSUPPORTED_MEDIA_TYPE => false,
-            StatusCode::RANGE_NOT_SATISFIABLE => false,
-            StatusCode::EXPECTATION_FAILED => false,
-            StatusCode::IM_A_TEAPOT => false,
-            StatusCode::MISDIRECTED_REQUEST => false,
-            StatusCode::UNPROCESSABLE_ENTITY => false,
-            StatusCode::LOCKED => false,
-            StatusCode::FAILED_DEPENDENCY => false,
-            StatusCode::UPGRADE_REQUIRED => false,
-            StatusCode::PRECONDITION_REQUIRED => false,
-            StatusCode::TOO_MANY_REQUESTS => false,
-            StatusCode::REQUEST_HEADER_FIELDS_TOO_LARGE => false,
-            StatusCode::UNAVAILABLE_FOR_LEGAL_REASONS => false,
-            StatusCode::INTERNAL_SERVER_ERROR => false,
-            StatusCode::NOT_IMPLEMENTED => false,
-            StatusCode::BAD_GATEWAY => false,
-            StatusCode::INSUFFICIENT_STORAGE => false,
-            StatusCode::LOOP_DETECTED => false,
-            StatusCode::NOT_EXTENDED => false,
-            StatusCode::NETWORK_AUTHENTICATION_REQUIRED => false,
-            _ => true,
-        };
+        let success = !matches!(
+            status_code,
+            StatusCode::BAD_REQUEST
+                | StatusCode::UNAUTHORIZED
+                | StatusCode::PAYMENT_REQUIRED
+                | StatusCode::FORBIDDEN
+                | StatusCode::NOT_FOUND
+                | StatusCode::METHOD_NOT_ALLOWED
+                | StatusCode::NOT_ACCEPTABLE
+                | StatusCode::PROXY_AUTHENTICATION_REQUIRED
+                | StatusCode::REQUEST_TIMEOUT
+                | StatusCode::CONFLICT
+                | StatusCode::GONE
+                | StatusCode::LENGTH_REQUIRED
+                | StatusCode::PRECONDITION_FAILED
+                | StatusCode::PAYLOAD_TOO_LARGE
+                | StatusCode::URI_TOO_LONG
+                | StatusCode::UNSUPPORTED_MEDIA_TYPE
+                | StatusCode::RANGE_NOT_SATISFIABLE
+                | StatusCode::EXPECTATION_FAILED
+                | StatusCode::IM_A_TEAPOT
+                | StatusCode::MISDIRECTED_REQUEST
+                | StatusCode::UNPROCESSABLE_ENTITY
+                | StatusCode::LOCKED
+                | StatusCode::FAILED_DEPENDENCY
+                | StatusCode::UPGRADE_REQUIRED
+                | StatusCode::PRECONDITION_REQUIRED
+                | StatusCode::TOO_MANY_REQUESTS
+                | StatusCode::REQUEST_HEADER_FIELDS_TOO_LARGE
+                | StatusCode::UNAVAILABLE_FOR_LEGAL_REASONS
+                | StatusCode::INTERNAL_SERVER_ERROR
+                | StatusCode::NOT_IMPLEMENTED
+                | StatusCode::BAD_GATEWAY
+                | StatusCode::INSUFFICIENT_STORAGE
+                | StatusCode::LOOP_DETECTED
+                | StatusCode::NOT_EXTENDED
+                | StatusCode::NETWORK_AUTHENTICATION_REQUIRED,
+        );
 
         Responder {
             success,
