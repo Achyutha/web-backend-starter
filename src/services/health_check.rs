@@ -1,5 +1,7 @@
 use axum::http::StatusCode;
 
-pub async fn health_check() -> StatusCode {
-    StatusCode::OK
+use crate::commons::responder::Responder;
+
+pub async fn health_check() -> Responder<String> {
+    Responder::create_response("healthy".to_string(), StatusCode::OK)
 }

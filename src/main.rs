@@ -2,12 +2,13 @@ use anyhow::{Context, Result};
 use app_settings::Settings;
 use axum::{routing::get, Router};
 use sqlx::MySqlPool;
-use tokio::signal;
 use std::net::SocketAddr;
+use tokio::signal;
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
 mod app_settings;
+mod commons;
 mod globals;
 mod services;
 
@@ -48,7 +49,7 @@ async fn shutdown_signal() {
 async fn main() -> Result<()> {
     let config = Settings::get_configuration()
         .with_context(|| format!("Unable to read the configuration file!"))?;
-    
+
     init_tracing(&config);
 
     let connection_pool = MySqlPool::connect(&config.database.connection_string())
@@ -60,7 +61,10 @@ async fn main() -> Result<()> {
             )
         })?;
 
-    info!("Connected to the database: {}", &config.database.database_name);
+    info!(
+        "Connected to the database: {}",
+        &config.database.database_name
+    );
 
     let global_state = AppState {
         db: connection_pool,
