@@ -10,6 +10,8 @@ pub struct Responder<T: Serialize> {
     pub body: T,
     #[serde(skip_serializing)]
     pub status_code: StatusCode,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub warnings: Vec<String>,
 }
 
 impl<T> IntoResponse for Responder<T>
@@ -21,6 +23,7 @@ where
             body: self.body,
             success: self.success,
             status_code: self.status_code,
+            warnings: self.warnings,
         };
 
         let data = serde_json::to_string(&response_body).unwrap();
@@ -38,7 +41,15 @@ impl<T> Responder<T>
 where
     T: Serialize,
 {
-    pub fn create_response(body: T, status_code: StatusCode) -> Responder<T> {
+    pub fn create_response(
+        body: T,
+        status_code: StatusCode,
+        warnings: Option<Vec<String>>,
+    ) -> Responder<T> {
+        let mut warnings_to_add: Vec<String> = Vec::new();
+        if let Some(warnings) = warnings {
+            warnings_to_add = warnings;
+        }
         let success = !matches!(
             status_code,
             StatusCode::BAD_REQUEST
@@ -82,6 +93,7 @@ where
             success,
             body,
             status_code,
+            warnings: warnings_to_add,
         }
     }
 }
