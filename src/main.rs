@@ -6,6 +6,7 @@ use std::net::SocketAddr;
 use tokio::signal;
 use tower_http::trace::TraceLayer;
 use tracing::info;
+use tracing_appender::rolling::{RollingFileAppender, Rotation};
 
 mod app_settings;
 mod commons;
@@ -15,8 +16,16 @@ mod services;
 use crate::globals::AppState;
 
 fn init_tracing(config: &Settings) {
+    let file_appender = RollingFileAppender::new(
+        Rotation::DAILY,
+        &config.log.directory,
+        &config.log.file_prefix,
+    );
     std::env::set_var("RUST_LOG", &config.log.level[..]);
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt::fmt()
+        .json()
+        .with_writer(file_appender)
+        .init();
 }
 
 async fn shutdown_signal() {

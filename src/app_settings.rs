@@ -17,11 +17,13 @@ pub struct Settings {
     pub host: [u8; 4],
     pub port: u16,
     pub database: DatabaseSettings,
-    pub log: Log,
+    pub log: LogSettings,
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct Log {
+pub struct LogSettings {
+    pub directory: String,
+    pub file_prefix: String,
     pub level: String,
 }
 
