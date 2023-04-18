@@ -14,6 +14,8 @@
     "database_name": ""
   },
   "log": {
-    "level": "debug"
+    "level": "debug",
+    "file_prefix": "",
+    "directory": ""
   }
 }
