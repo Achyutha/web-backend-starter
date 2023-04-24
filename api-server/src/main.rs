@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
-use app_settings::Settings;
 use axum::{routing::get, Router};
+use utils::app_settings::AppState;
+use utils::config::Settings;
 use sqlx::MySqlPool;
 use std::net::SocketAddr;
 use tokio::signal;
@@ -8,12 +9,8 @@ use tower_http::trace::TraceLayer;
 use tracing::info;
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 
-mod app_settings;
-mod commons;
-mod globals;
-mod services;
-
-use crate::globals::AppState;
+mod common;
+mod routes;
 
 fn init_tracing(config: &Settings) {
     let file_appender = RollingFileAppender::new(
@@ -81,8 +78,8 @@ async fn main() -> Result<()> {
     };
 
     let app = Router::new()
-        .route("/health_check", get(services::health_check::health_check))
-        .fallback(services::not_found::not_found)
+        .route("/health_check", get(routes::health_check::health_check))
+        .fallback(routes::not_found::not_found)
         .with_state(global_state)
         .layer(TraceLayer::new_for_http());
 

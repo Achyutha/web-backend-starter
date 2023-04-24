@@ -1,4 +1,4 @@
-use crate::app_settings::Settings;
+use crate::config::Settings;
 use sqlx::MySqlPool;
 
 #[derive(Debug, Clone)]
