@@ -14,7 +14,7 @@ pub struct DatabaseSettings {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Settings {
-    pub host: [u8; 4],
+    pub host: String,
     pub port: u16,
     pub database: DatabaseSettings,
     pub log: LogSettings,
@@ -29,7 +29,7 @@ pub struct LogSettings {
 
 impl Settings {
     pub fn get_configuration() -> Result<Self, ConfigError> {
-        let run_mode = env::var("MODE").unwrap_or_else(|_| "development".into());
+        let run_mode = env::var("MODE").unwrap_or_else(|_| "default".into());
 
         let s = Config::builder()
             .add_source(File::with_name("configs/default"))
