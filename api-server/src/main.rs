@@ -1,13 +1,13 @@
 use anyhow::{Context, Result};
 use axum::{routing::get, Router};
-use utils::app_settings::AppState;
-use utils::config::Settings;
 use sqlx::MySqlPool;
 use std::net::SocketAddr;
 use tokio::signal;
 use tower_http::trace::TraceLayer;
 use tracing::info;
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
+use utils::app_settings::AppState;
+use utils::config::Settings;
 
 mod common;
 mod routes;
