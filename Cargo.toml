@@ -1,7 +1,8 @@
 [workspace]
 members = [
   "utils",
-  "api-server"
+  "api-server",
+  "job-scheduler"
 ]
 
 [workspace.dependencies]
