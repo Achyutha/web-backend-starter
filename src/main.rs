@@ -77,7 +77,15 @@ async fn main() -> Result<()> {
         .with_state(global_state)
         .layer(TraceLayer::new_for_http());
 
-    let addr = SocketAddr::from((config.host, config.port));
+    let addr: SocketAddr = format!("{}:{}", &config.host, &config.port)[..]
+        .trim()
+        .parse()
+        .with_context(|| {
+            format!(
+                "Invalid host to run the server: {}:{}",
+                &config.host, &config.port
+            )
+        })?;
 
     info!("Listening on port: {}!", config.port);
 
