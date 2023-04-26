@@ -13,18 +13,24 @@ pub struct DatabaseSettings {
 }
 
 #[derive(Debug, Deserialize, Clone)]
+pub struct LogSettings {
+    pub directory: String,
+    pub file_prefix: String,
+    pub level: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct RedisSettings {
+    pub host: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
 pub struct Settings {
     pub host: String,
     pub port: u16,
     pub database: DatabaseSettings,
     pub log: LogSettings,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub struct LogSettings {
-    pub directory: String,
-    pub file_prefix: String,
-    pub level: String,
+    pub redis: RedisSettings,
 }
 
 impl Settings {
@@ -45,5 +51,11 @@ impl DatabaseSettings {
             "mysql://{}:{}@{}:{}/{}",
             self.username, self.password, self.host, self.port, self.database_name
         )
+    }
+}
+
+impl RedisSettings {
+    pub fn connection_string(&self) -> String {
+        format!("redis://{}", self.host)
     }
 }
