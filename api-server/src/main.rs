@@ -1,13 +1,12 @@
 use anyhow::{Context, Result};
 use axum::{routing::get, Router};
-use sqlx::MySqlPool;
 use std::net::SocketAddr;
 use tokio::signal;
 use tower_http::trace::TraceLayer;
 use tracing::info;
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
-use utils::app_settings::AppState;
 use utils::config::Settings;
+use utils::get_app_state;
 
 mod common;
 mod routes;
@@ -53,47 +52,30 @@ async fn shutdown_signal() {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let config = Settings::get_configuration()
-        .with_context(|| "Unable to read the configuration file!".to_string())?;
+    let global_state = get_app_state().await?;
 
-    init_tracing(&config);
-
-    let connection_pool = MySqlPool::connect(&config.database.connection_string())
-        .await
-        .with_context(|| {
-            format!(
-                "Unable to connect to the database {}",
-                &config.database.database_name
-            )
-        })?;
-
-    info!(
-        "Connected to the database: {}",
-        &config.database.database_name
-    );
-
-    let global_state = AppState {
-        db: connection_pool,
-        config: config.clone(),
-    };
+    init_tracing(&global_state.config);
 
     let app = Router::new()
         .route("/health_check", get(routes::health_check::health_check))
         .fallback(routes::not_found::not_found)
-        .with_state(global_state)
+        .with_state(global_state.clone())
         .layer(TraceLayer::new_for_http());
 
-    let addr: SocketAddr = format!("{}:{}", &config.host, &config.port)[..]
+    let addr: SocketAddr = format!(
+        "{}:{}",
+        &global_state.config.host, &global_state.config.port
+    )[..]
         .trim()
         .parse()
         .with_context(|| {
             format!(
                 "Invalid host to run the server: {}:{}",
-                &config.host, &config.port
+                &global_state.config.host, &global_state.config.port
             )
         })?;
 
-    info!("Listening on port: {}!", config.port);
+    info!("Listening on port: {}!", global_state.config.port);
 
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
