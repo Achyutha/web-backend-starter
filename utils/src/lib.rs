@@ -25,7 +25,7 @@ pub async fn get_app_state() -> Result<AppState, anyhow::Error> {
 
     let client = Client::open(&config.redis.connection_string()[..])?;
     let manager = RedisConnectionManager::new(client);
-    let redis_pool = Pool::builder().max_open(20).build(manager);
+    let redis_pool = Pool::builder().max_open(config.redis.max_pool_size as u64).build(manager);
 
     Ok(AppState {
         db: connection_pool,
