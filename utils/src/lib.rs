@@ -1,7 +1,10 @@
 pub mod app_settings;
 pub mod config;
 
+use mobc_redis::{mobc::Pool, redis::Client};
+
 pub use app_settings::*;
+use mobc_redis::RedisConnectionManager;
 use sqlx::MySqlPool;
 
 use crate::config::Settings;
@@ -20,8 +23,13 @@ pub async fn get_app_state() -> Result<AppState, anyhow::Error> {
             )
         })?;
 
+    let client = Client::open(&config.redis.connection_string()[..])?;
+    let manager = RedisConnectionManager::new(client);
+    let redis_pool = Pool::builder().max_open(20).build(manager);
+
     Ok(AppState {
         db: connection_pool,
         config: config.clone(),
+        redis_pool,
     })
 }
