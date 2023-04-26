@@ -22,6 +22,7 @@ pub struct LogSettings {
 #[derive(Debug, Deserialize, Clone)]
 pub struct RedisSettings {
     pub host: String,
+    pub max_pool_size: u8,
 }
 
 #[derive(Debug, Deserialize, Clone)]
